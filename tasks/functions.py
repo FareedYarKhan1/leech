@@ -29,10 +29,10 @@ def upload_to_aws(local_filename,file_name):
         url=f"https://{BUKET_NAME}.s3.ap-south-1.amazonaws.com/{folder}{file_name}"
         return url
     except FileNotFoundError:
-        print("The file was not found")
+        
         return False
     except NoCredentialsError:
-        print("Credentials not available")
+     
         return False
 
 

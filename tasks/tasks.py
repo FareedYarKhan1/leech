@@ -22,7 +22,7 @@ def run_monitor(self):
             scrapp_query.delay(qury,t.pk)
             
     except task.DoesNotExist:
-        print("No job to run")
+        pass
     
 
 
@@ -34,7 +34,7 @@ def scrapp_query(query,task_pk):
         pass
     else:
         results.objects.create(task=task_obj,result_file=filename)
-    print(filename)
+    
 
 
 @celery_app.task()

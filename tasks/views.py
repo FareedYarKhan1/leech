@@ -54,7 +54,7 @@ def view_task(request):
             response.append(str(task_obj.query))
         else:
             response.append(str(task_obj))
-        print(response)
+      
     elif type=="edit":
         task_obj=task.objects.get(pk=id)
         if(task_obj.monitoring_enabled):
@@ -74,6 +74,6 @@ def view_task(request):
         for img in image:
             res={'image':img.picture.url}
             response.append(res)
-        print(response)
+      
     
     return JsonResponse({'response':response})

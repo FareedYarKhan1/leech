@@ -122,7 +122,6 @@ def get_text_html(input_data):
 
         request_page = s.get(url,headers=header,timeout=20)
         output,occu = check_html(request_page.text,query,url)
-        print(output,occu)
         #request_page.html.render(timeout=8000)
 
     except Exception as err:
@@ -163,12 +162,7 @@ def get_text_html(input_data):
             return dictionary
     dictionary["present"] = output
     dictionary["occurance"] = occu
-    # print('dictionarydictionarydictionarydictionary')
-    # print('dictionarydictionarydictionarydictionary')
-    # print('dictionarydictionarydictionarydictionary')
-    # print('dictionarydictionarydictionarydictionary')
-    # print('dictionarydictionarydictionarydictionary')
-    # print(dictionary)             
+              
     return dictionary
 
 
@@ -194,10 +188,10 @@ def upload_to_aws(local_filename,file_name):
         url=f"https://{BUKET_NAME}.s3.ap-south-1.amazonaws.com/{folder}{file_name}"
         return url
     except FileNotFoundError:
-        print("The file was not found")
+   
         return False
     except NoCredentialsError:
-        print("Credentials not available")
+        
         return False
 
 def upload_images_on_aws(local_filename):
@@ -213,10 +207,9 @@ def upload_images_on_aws(local_filename):
         url=f"https://{BUKET_NAME}.s3.ap-south-1.amazonaws.com/{folder}{local_filename}"
         return url
     except FileNotFoundError:
-        print("The file was not found")
+      
         return False
     except NoCredentialsError:
-        print("Credentials not available")
         return False
 
 
@@ -251,7 +244,7 @@ def main_runner(queries,task):
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         future = executor.map(get_text_html, stories_link)
     # future = get_text_html(stories_link[0])
-    # print(future)
+   
     df = pd.DataFrame.from_dict(list(future))
     folder="Temp/"
     filname="task-"+str(task)+'.csv'
@@ -287,14 +280,13 @@ def remove_same_href(dictionary):
     img0 = dictionary['img0']
     img1 = dictionary['img1']
     img2 = dictionary['img2']
-    print()
-    print(f"[images links get Image 1:{len(img0)} Image 2:{len(img1)} Image 3:{len(img2)}]")
+   
     for key in img0:
         img1.pop(key, None)
         img2.pop(key,None)
-    print("Removing Duplicate Links")
+    
     time.sleep(0.3)
-    print(f"[images links get Image 1:{len(img0)} Image 2:{len(img1)} Image 3:{len(img2)}]")
+    
     dictionary['img0'] = img0
     dictionary['img1'] = img1
     dictionary['img2'] = img2
@@ -380,7 +372,7 @@ def image_scrapper(urls):
 
     
     threads = len(urls_list)
-    print(threads)
+    
     # urls_list = [[imge_path,folder_path,['googlelenslink','googlelenslink','googlelenslink']],[imge_path,folder_path,['googlelenslink','googlelenslink','googlelenslink']]]
     with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         future = executor.map(script, urls_list)

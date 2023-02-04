@@ -9,7 +9,6 @@ from leech import settings
 def runTask(sender,instance,created,**kwrgs):
     if created:
         if instance.task_type=="1":
-            print("Running Query Search")
             query=[]
             query.append(instance.query)
             scrapp_query.delay(query,instance.pk)

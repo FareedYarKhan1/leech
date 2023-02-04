@@ -38,13 +38,13 @@ def remove_duplicate_href(dictionary):
     img0 = dictionary['img0']
     img1 = dictionary['img1']
     img2 = dictionary['img2']
-    print()
-    print(f"[images links get Image 1:{len(img0)} Image 2:{len(img1)} Image 3:{len(img2)}]")
+     
+     
     for key in img0:
         img1.pop(key, None)
         img2.pop(key,None)
     time.sleep(0.3)
-    print(f"[Removing Duplicate Links Image 1:{len(img0)} Image 2:{len(img1)} Image 3:{len(img2)}]")
+     
     dictionary['img0'] = img0
     dictionary['img1'] = img1
     dictionary['img2'] = img2

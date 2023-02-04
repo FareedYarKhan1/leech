@@ -93,7 +93,7 @@ class Downloading():
         try:
             expire_links = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'b0I81c'))).text
             if 'expired' in expire_links:
-                print('LINKS OF IMAGES ARE EXPIRE TRY AGAIN WITH NEW LINKS')
+                
                 sys.exit()
         except:
             pass
@@ -105,7 +105,7 @@ class Downloading():
             
             link = wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'WpHeLc'))).get_attribute('href')
         except:
-            print('ROBOT reCAPTCHA  !!!!!!!')
+            
             sys.exit() 
         
 
@@ -120,7 +120,7 @@ class Downloading():
         
         
         # Scroll down
-        print("[%] Scrolling down.")
+        
         verical_ordinate = 100
         for i in range(30):
             browser.execute_script("arguments[0].scrollTop = arguments[1]", element, verical_ordinate)
@@ -170,12 +170,11 @@ class Downloading():
                         
                         for i in range(avrg):
                             total = total + (matches[i].distance)
-                        print(f"[%]Similar images {download_img} [%]Matches Average {(total/avrg)}")
                         
                         #threshhold to match image
                         if (total/avrg) < self.thresh:
                             
-                            print("match")
+                            
                             most_similar = self.make_folder(folder_name,'most_similar')
                             sav = f"{most_similar}/{download_img}"
                             cv2.imwrite(sav,img2)
@@ -206,7 +205,6 @@ class Downloading():
         
             img_button = wait.until(EC.visibility_of_element_located((By.ID, 'Z6bGOb')))
         except:
-            print('ROBOT CAPTHA !!!!!!!')
             sys.exit()
         # time.sleep(5)
         # img_button = browser.find_element(By.ID,'Z6bGOb')
@@ -226,7 +224,6 @@ class Downloading():
             
             
             # Scroll down
-            print("[%] Scrolling down.")
             for i in range(30):
                 element.send_keys(Keys.PAGE_DOWN)
                 time.sleep(0.3)  # bot id protection
@@ -234,7 +231,6 @@ class Downloading():
             for i in range(10):
                 element.send_keys(Keys.PAGE_DOWN)
                 time.sleep(0.3)  # bot id protection
-            print("[%] Reached end of Page.")
             
             time.sleep(5)
             href = browser.find_elements(By.XPATH, '//*[contains(concat( " ", @class, " " ), concat( " ", "BUooTd", " " ))]')
@@ -264,14 +260,14 @@ class Downloading():
                         #split base64 link into string if src is not encrypted
                         b64_string =src.split(',')[1]
                         
-                    print(f"[%] Exact images image{i+1}.jpg")
+                  
                     exact_imgs[href] = b64_string
                     # count+=1
                     # if count > len(href):
                     #     break
         else:
             
-            print('Exact Images not found')
+            pass
         
         #delete exact image folder 
         if os.path.exists(matches_folder_temp):
@@ -301,10 +297,10 @@ class Downloading():
         temp_similar_imgs,link = self.similar_images(browser,img_array,img_path)
 
         #Match images funtions
-        print("[%] Successfully opened link Exact Images.")
+       
         browser.get(link)
         temp_exact_imgs = self.exact_images(browser)
         browser.close()
-        print("[%] Closed ChromeDriver.")
+        
 
         return temp_similar_imgs,temp_exact_imgs
