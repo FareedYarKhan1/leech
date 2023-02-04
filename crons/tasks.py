@@ -9,4 +9,3 @@ from django.apps import apps
 def scrapp_query(query,task):
     filename=main_runner(query,task)
     
-    print(filename)
