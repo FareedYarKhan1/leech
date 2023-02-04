@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Leech Guard</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="#">Leech Guard</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+               
+              </li>
+              
+            </ul>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Account
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                  
+                </ul>
+              </div>
+          </div>
+        </div>
+      </nav>
+
+      <div style="padding: 10px 0;">
+        <div class="container">
+            <a href="{% url 'upload'%}" class="btn btn-success " style="margin-bottom:10px;">Add New Task</a>
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    
+                    <th scope="col">Task Type</th>
+                    <th>Content</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Is on monitoring</th>
+
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for res in results %}
+                  <tr id="tr-{{res.pk}}">
+                    {% if res.task_type == "2" %}
+                    <td >Image Search</td>
+                    <td ><button class="btn btn-sm btn-success" onclick="viewImages({{res.pk}})">view images</button></td>
+                    {% endif %}
+                    {% if res.task_type == "1" %}
+                    <td >Query Search</td>
+                    <td >{{ res.query }}</td>
+                    {% endif %}
+                    <td >{{ res.timestamp }}</td>
+                    
+
+                    {% if res.monitoring_enabled %}
+                    <td id="monitoring"><button class="btn btn-sm btn-success"  onclick="editTask({{res.pk}})">ON</button></td>
+                    {% else %}
+                    <td id="monitoring"><button class="btn btn-sm btn-danger" onclick="editTask({{res.pk}})">OFF</button></td>
+                    {% endif %}
+                    
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-success mx-2" onclick="viewTask({{res.pk}})"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-sm btn-danger mx-2" onclick="deleteTask({{res.pk}})"><i class="fa fa-trash"></i></button>
+
+                        </div>
+                    </td>
+
+                  </tr>
+                  {% endfor %}
+                 
+                </tbody>
+              </table>
+          </div>
+      </div>
+
+      <!-- Button trigger modal -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="TaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="TaskContent">
+          ...
+        </div>
+        
+    </div>
+  </div>
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+    <script>
+        
+        function viewTask(id)
+        {
+            $.ajax({
+                url:"{% url 'view_task' %}",
+                method:"POST",
+                data:{id:id,type:"view"},
+                success:function(respons){
+                    ele=""
+                    task=respons.response[respons.response.length -1]
+                    for (let index = 0; index < respons.response.length-1; index++) {
+                        const element = respons.response[index];
+                        ele += `<a href='${element.result_file}' class='btn btn-success my-2 w-100'>Result | ${element.created_at}</a> `
+                    }
+                    $('#exampleModalLabel').html(task)
+                    $('#TaskContent').html(ele)
+                    $('#TaskModal').modal('show')
+                }
+            })
+        }
+
+        function editTask(id)
+        {
+            
+            $.ajax({
+                url:"{% url 'view_task' %}",
+                method:"POST",
+                data:{id:id,type:"edit"},
+                success:function(respons){
+                   $('#monitoring').html(respons.response)
+                }
+            })
+        }
+
+
+        function deleteTask(id)
+        {
+            $.ajax({
+                url:"{% url 'view_task' %}",
+                method:"POST",
+                data:{id:id,type:"delete"},
+                success:function(respons){
+                   if(respons.response==1)
+                   {
+                    $('#tr-'+id).remove()
+                   }
+                }
+            })
+        }
+
+        function viewImages(id)
+        {
+            $.ajax({
+                url:"{% url 'view_task' %}",
+                method:"POST",
+                data:{id:id,type:"view_images"},
+                success:function(respons){
+                    ele=""
+                    
+                    for (let index = 0; index < respons.response.length; index++) {
+                        const element = respons.response[index];
+                        if(respons.response.length==1){
+                            ele += `<img src='${element.image}'  style='width:100%; height:100%;'/>`
+                        }
+                        else
+                        {
+                            ele += `<img src='${element.image}' width="200px" height="200" style='margin:2px'/>`
+                        }
+                        
+                    }
+                    div=`<div class='d-flex'>${ele}</div>`
+                    $('#exampleModalLabel').html('Images')
+                    $('#TaskContent').html(div)
+                    $('#TaskModal').modal('show')
+                }
+            })
+        }
+    </script>
+
+
+  </body>
+</html>
