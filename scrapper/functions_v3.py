@@ -13,7 +13,7 @@ response_urls=[]
 '''Function making dir '''
 def make_dir(urls):
     
-    t = 'temp'
+    t = 'Temp'
     if not os.path.exists(t):
         os.mkdir(t)
     

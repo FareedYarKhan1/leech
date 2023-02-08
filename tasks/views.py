@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from .models import results
 from django.views.decorators.csrf import csrf_exempt
 
+# importing modules
+import urllib.request
 from django.http import JsonResponse
 
 @login_required(login_url='login')
@@ -35,8 +37,11 @@ def add_task(request):
     if file:
         for f in file:
             img_obj=task_images.objects.create(task=task_obj,picture=f)
-            image=img_obj.picture.name
-            img.append(media_url+image)
+            image_url=img_obj.picture.url
+            image_name=img_obj.picture.name
+            local_path="Temp/saved_img_temp/"+image_name
+            urllib.request.urlretrieve(image_url,local_path)
+            img.append(local_path)
         scrapp_image.delay(task_obj.pk,img)
     return render(request,'index.html',context=({'status':1}))
 
