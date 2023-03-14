@@ -192,3 +192,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
+CSRF_TRUSTED_ORIGINS = [
+    'https://leechgaurd.herokuapp.com'
+]
