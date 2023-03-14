@@ -148,7 +148,7 @@ small{
                         </div>
                         {% if status %}
                         <div class="col-12"><div class="alert alert-primary alert-dismissible fade show" role="alert">
-                            <strong>Done!</strong> Task added successfully
+                            <strong>{{ status }}</strong>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -167,7 +167,7 @@ small{
                             <div class="col-3"><div class="line r"></div></div>
                         </div>
                     </div>
-                    <form class="myform" method="post" action="{% url 'submit_task'%}" enctype="multipart/form-data">
+                    <form class="myform" id="task-form" method="post" action="{% url 'submit_task'%}" enctype="multipart/form-data">
                         <div class="form-group">
                             <label class="form-check-label" for="type">Select Type</label>
                             <select name="type" id="type" class="form-control">
@@ -182,7 +182,7 @@ small{
                           </div>
                           {% csrf_token %}
                           <div class="form-group mt-3">
-                              <button type="submit" class="btn btn-block btn-primary btn-lg"><small><i class="far fa-user pr-2"></i>Add Task</small></button>
+                              <button type="submit" class="btn btn-block btn-primary btn-lg" id="task_add_btn"><small><i class="far fa-user pr-2"></i>Add Task</small></button>
                           </div>
                     </form>
                 </div>
@@ -196,6 +196,8 @@ small{
 
     <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
     <script>
+        
+
         $('#type').change(function(e){
             e.preventDefault()
             value=$('#type').val()
@@ -207,7 +209,13 @@ small{
             {
                 $('#imageWraper').html("<input type='FILE' name='task_img' multiple/>")
             }
-        })
+        });
+        $('#task-form').submit(function(e)
+        {
+            
+            $('#task_add_btn').attr('disabled','disabled');
+           
+        });
     </script>
 </body>
 </html>

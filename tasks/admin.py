@@ -3,4 +3,4 @@ from . models import *
 # Register your models here.
 admin.site.register(task)
 admin.site.register(results)
-admin.site.register(task_images)
+admin.site.register(notice)

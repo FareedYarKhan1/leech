@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from crons.tasks import scrapp_query
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+import pandas as pd
+from .consumers import * 
 # Create your models here.
 
 # iterable
@@ -17,6 +21,38 @@ class task(models.Model):
     search_image=models.ImageField(upload_to="query_images/",default=None,null=True,blank=True)
     monitoring_enabled=models.BooleanField(default=True)
     timestamp=models.DateTimeField(auto_now_add=True)
+    @property
+    def get_unread_links(self):
+         counter=0
+         try:
+              notice_obj=notice.objects.get(task=self)
+              
+              counter=notice_obj.unread_links
+         except:
+             pass
+         return counter  
+    def set_unread_links(self,links):
+         
+         try:
+              notice_obj=notice.objects.get(task=self)
+              
+              old=notice_obj.unread_links
+              whole=old+links
+              notice_obj.unread_links=whole
+              notice_obj.save()
+         except:
+             pass
+    def clear_links(self):
+         
+         try:
+              notice_obj=notice.objects.get(task=self)
+              
+              notice_obj.unread_links=0
+              notice_obj.save()
+         except:
+             pass
+         
+            
     def __str__(self):
         
         if self.task_type=="1":
@@ -35,9 +71,21 @@ class task_images(models.Model):
 class results(models.Model):
     task=models.ForeignKey(task,on_delete=models.CASCADE)
     is_completed=models.BooleanField(default=False)
-    result_file=models.URLField(max_length = 300,default=None,null=True,blank=True)
+    result_file=models.TextField(default=None,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         
         return str(self.task.user)+"|"+str(self.created_at)
+    def save(self,**kwargs):
+            return super().save()
+        
+class notice(models.Model):
+    task=models.OneToOneField(task,on_delete=models.CASCADE)
+    links=models.TextField(default='')
+    unread_links=models.BigIntegerField(default=0)
+    is_seen=models.BooleanField(default=False)
+
+    def save(self,**kwargs):
+            
+            return super().save()

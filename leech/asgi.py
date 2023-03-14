@@ -1,16 +1,20 @@
-"""
-ASGI config for leech project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/4.1/howto/deployment/asgi/
-"""
+# core/asgi.py
 
 import os
 
+from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
+from django.urls import path, re_path
+from tasks.consumers import *
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'leech.settings')
+websocket_urlpatterns = [
+    re_path(r'ws/connect/(?P<room_name>\w+)/$',  MyConsumer.as_asgi())
+]
 
-application = get_asgi_application()
+application = ProtocolTypeRouter({
+  'http': get_asgi_application(),
+  'websocket': URLRouter(
+      websocket_urlpatterns
+    ),
+})

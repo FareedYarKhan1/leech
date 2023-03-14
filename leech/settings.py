@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'crons',
     'tasks',
     'storages',
+    'channels',  # new
 ]
 
 MIDDLEWARE = [
@@ -53,10 +55,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'leech.urls'
-import os 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,7 +77,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'leech.wsgi.application'
-
+ASGI_APPLICATION = 'leech.asgi.application'  # new
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -137,7 +140,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 #CELERY SETTINGS
-CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_BROKER_URL = os.environ['REDIS_URL']
+#CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
 CELERY_ACCEPT_CONTENT= ["application/json"] 
 CELERY_RESULT_SERIALIZER="json"
 CELERY_TASK_SERIALIZER="json"
@@ -152,9 +156,9 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/accounts/login"  # new
 
 
-AWS_ACCESS_KEY_ID = 'AKIARPPQWUWXQJGAVPSZ'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'leechscrapping'
+AWS_ACCESS_KEY_ID = 'AKIAT5TA5GAZOLYT4SNY'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'searchimagesscraper'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
@@ -168,3 +172,23 @@ STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 DEFAULT_FILE_STORAGE = 'leech.storage_backends.MediaStorage'  # <-- here is where we reference it
+
+
+"""CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}"""
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+    },
+}

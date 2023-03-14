@@ -12,7 +12,7 @@ app.conf.update(timezone="Asia/Karachi")
 app.conf.beat_schedule = {
     'monitor_function': {
         'task': 'tasks.tasks.run_monitor',
-        'schedule': crontab(minute=0, hour='*/1'),
+        'schedule': crontab(minute="*/10"),
        
     },
 }

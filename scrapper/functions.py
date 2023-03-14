@@ -31,6 +31,7 @@ import time,datetime
 import os,cv2
 from .download import Downloading
 
+
 USER_AGENTS = [
 ('Mozilla/5.0 (X11; Linux x86_64) '
 'AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -56,9 +57,9 @@ USER_AGENTS = [
 'Chrome/63.0.3239.108 '
 'Safari/537.36'),  # chrome
 ]
-ACCESS_KEY = 'AKIARPPQWUWXQJGAVPSZ'
-SECRET_KEY = '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'
-BUKET_NAME= "cs181106"
+ACCESS_KEY = 'AKIAT5TA5GAZOLYT4SNY'
+SECRET_KEY = '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'
+BUKET_NAME= "searchimagesscraper"
 unsupported_browser = 'Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405'
 
 header = {
@@ -185,7 +186,7 @@ def upload_to_aws(local_filename,file_name):
         folder="scrappingResult/"
         
         s3.upload_file(local_filename,BUKET_NAME, folder+file_name)
-        url=f"https://{BUKET_NAME}.s3.ap-south-1.amazonaws.com/{folder}{file_name}"
+        url=f"https://{BUKET_NAME}.s3.amazonaws.com/{folder}{file_name}"
         return url
     except FileNotFoundError:
    
@@ -204,7 +205,7 @@ def upload_images_on_aws(local_filename):
         folder="scrappingImages/"
         
         s3.upload_file(local_filename,BUKET_NAME, folder+local_filename)
-        url=f"https://{BUKET_NAME}.s3.ap-south-1.amazonaws.com/{folder}{local_filename}"
+        url=f"https://{BUKET_NAME}.s3.amazonaws.com/{folder}{local_filename}"
         return url
     except FileNotFoundError:
       
@@ -214,7 +215,7 @@ def upload_images_on_aws(local_filename):
 
 
 
-def main_runner(queries,task):
+def main_runner(queries,task_pk):
     for query in queries:
         query=str(query)
         search = query.replace(' ', '+')
@@ -246,12 +247,16 @@ def main_runner(queries,task):
     # future = get_text_html(stories_link[0])
    
     df = pd.DataFrame.from_dict(list(future))
-    folder="Temp/"
-    filname="task-"+str(task)+'.csv'
+    folder="Temp/task-"+str(task_pk)+"/"
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    filname="task-"+str(task_pk)+'.csv'
+    copy="task-"+str(task_pk)+'-first_notice.csv'
     local_file_address=folder+filname
     df.to_csv (local_file_address, index = False, header=True)
-    url=upload_to_aws(local_file_address,filname)
-    return url
+    df.to_csv(folder+copy)
+    
+    return local_file_address
     
       
 '''Function making dir '''
